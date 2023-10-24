@@ -20,13 +20,19 @@ impl Player
     }
 
     // Renders the player
-    pub fn render(&self, ctx: &mut BTerm)
+    pub fn render(&self, ctx: &mut BTerm, camera: &Camera)
     {
-        ctx.set(self.position.x, self.position.y, WHITE, BLACK, to_cp437('@'));
+        ctx.set_active_console(1);
+        ctx.set(
+            self.position.x - camera.left_x, 
+            self.position.y - camera.top_y, 
+            WHITE, 
+            BLACK, 
+            to_cp437('@'));
     }
 
     // Updates the position of the player
-    pub fn update(&mut self, ctx: &mut BTerm, map: &Map)
+    pub fn update(&mut self, ctx: &mut BTerm, map: &Map, camera: &mut Camera)
     {
         if let Some(key) = ctx.key
         {
@@ -47,6 +53,7 @@ impl Player
             if map.can_enter_tile(new_position)
             {
                 self.position = new_position;
+                camera.on_player_move(new_position);
             }
         }
     }
