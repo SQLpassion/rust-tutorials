@@ -28,7 +28,7 @@ impl Map
         }
     }
 
-    // Renders the amp
+    // Renders the map
     pub fn render(&self, ctx: &mut BTerm, camera: &Camera)
     {
         ctx.set_active_console(0);

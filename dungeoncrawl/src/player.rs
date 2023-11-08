@@ -52,6 +52,7 @@ impl Player
             // Check if the new player position can be entered
             if map.can_enter_tile(new_position)
             {
+                // Set the position of the player and center the camera on the player
                 self.position = new_position;
                 camera.on_player_move(new_position);
             }

@@ -24,6 +24,7 @@ impl Camera
         }    
     }
 
+    // Centers the camera on the player
     pub fn on_player_move(&mut self, player_position: Point)
     {
         self.left_x = player_position.x - DISPLAY_WIDTH / 2;
