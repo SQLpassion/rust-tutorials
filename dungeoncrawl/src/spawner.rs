@@ -27,9 +27,10 @@ pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Poin
     (
         // The new entity consists of multiple components which are structured in a tuple
         (
-            Enemy,  // Enemy tag 
-            pos,    // Point component
-            Render  // Render component
+            Enemy,          // Enemy tag 
+            pos,            // Point component
+            MovingRandomly, // Random Movement tag
+            Render          // Render component
             {
                 color: ColorPair::new(WHITE, BLACK),
                 glyph: match rng.range(0, 4)
