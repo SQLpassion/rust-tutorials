@@ -8,7 +8,8 @@ pub fn player_input(
     ecs: &mut SubWorld, 
     #[resource] map: &Map,                      // Returns a reference to the stored Map resource
     #[resource] key: &Option<VirtualKeyCode>,   // Returns a reference to the stored VirtualKeyCode resource
-    #[resource] camera: &mut Camera)            // Returns a mutable reference to the stored Camera resource
+    #[resource] camera: &mut Camera,            // Returns a mutable reference to the stored Camera resource
+    #[resource] turn_state: &mut TurnState)     // Returns a mutable reference to the stored TurnState
 {
     if let Some(key) = key
     {
@@ -38,6 +39,7 @@ pub fn player_input(
                     // Change the position of the player accordingly, and reposition the camera
                     *pos = destination;
                     camera.on_player_move(destination);
+                    *turn_state = TurnState::PlayerTurn;
                 }
             });
         }
