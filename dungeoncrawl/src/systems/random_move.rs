@@ -2,34 +2,28 @@ use crate::prelude::*;
 
 // Implements the Random Movement system
 #[system]
-#[write_component(Point)]
+#[read_component(Point)]
 #[read_component(MovingRandomly)]
-pub fn random_move(ecs: &mut SubWorld, #[resource] map: &Map)
+pub fn random_move(ecs: &mut SubWorld, commands: &mut CommandBuffer)
 {
     // Retrieve all the entities that have a Point and MovingRandomly component
-    let mut movers = <(&mut Point, &MovingRandomly)>::query();
+    let mut movers = <(Entity, &Point, &MovingRandomly)>::query();
 
-    movers
-        .iter_mut(ecs)
-        .for_each(|(pos, _)|
+    // Iterate over each monster
+    movers.iter(ecs).for_each(|(entity, pos, _)|
+    {
+        let mut rng = RandomNumberGenerator::new();
+
+        // Calculate randomly a new destination
+        let destination = match rng.range(0, 4)
         {
-            let mut rng = RandomNumberGenerator::new();
+            0 => Point::new(-1, 0),
+            1 => Point::new(1, 0),
+            2 => Point::new(0, -1),
+            _ => Point::new(0, 1)
+        } + *pos;
 
-            // Calculate randomly a new destination
-            let destination = match rng.range(0, 4)
-            {
-                0 => Point::new(-1, 0),
-                1 => Point::new(1, 0),
-                2 => Point::new(0, -1),
-                _ => Point::new(0, 1)
-            } + *pos;
-
-            // Check if the new destination can be entered
-            if map.can_enter_tile(destination)
-            {
-                // Store the new destination in the world
-                *pos = destination;
-            }
-        }
-    );
+        // "Send" a WantsToMove message
+        commands.push(((), WantsToMove { entity: *entity, destination}));
+    });
 }
