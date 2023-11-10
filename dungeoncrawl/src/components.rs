@@ -19,3 +19,11 @@ pub struct Enemy;
 // The MovingRandomly component, which is just a simple tag
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct MovingRandomly;
+
+// The WantsToMove component
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct WantsToMove
+{
+    pub entity: Entity,
+    pub destination: Point
+}

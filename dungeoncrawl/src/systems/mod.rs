@@ -4,6 +4,7 @@ mod entity_render;
 mod collisions;
 mod random_move;
 mod end_turn;
+mod movement;
 
 use crate::prelude::*;
 
@@ -24,6 +25,8 @@ pub fn build_player_scheduler() -> Schedule
 {
     // Add the various systems to the scheduler
     Schedule::builder()
+        .add_system(movement::movement_system())
+        .flush()
         .add_system(collisions::collisions_system())
         .flush()
         .add_system(map_render::map_render_system())
