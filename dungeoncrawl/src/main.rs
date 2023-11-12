@@ -80,16 +80,24 @@ impl State
 // Implements the GameState trait
 impl GameState for State
 {
+    // This function is called on every tick during the game
     fn tick(&mut self, ctx: &mut BTerm)
     {
+        // Clear all the various consoles
         ctx.set_active_console(0);
         ctx.cls();
         ctx.set_active_console(1);
+        ctx.cls();
+        ctx.set_active_console(2);
         ctx.cls();
 
         // Add the current keyboard state as a new resource
         // It replaces the old keyboard state resource, because we can only store one instance of a specific resource type
         self.resources.insert(ctx.key);
+
+        // Add the current mouse position as a new resource
+        ctx.set_active_console(0);
+        self.resources.insert(Point::from_tuple(ctx.mouse_pos()));
 
         let current_state = self.resources.get::<TurnState>().unwrap().clone();
 
@@ -116,8 +124,10 @@ fn main() -> BError
         .with_tile_dimensions(32, 32)
         .with_resource_path("resources/")
         .with_font("dungeonfont.png", 32, 32)
-        .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "dungeonfont.png")
-        .with_simple_console_no_bg(DISPLAY_WIDTH, DISPLAY_HEIGHT, "dungeonfont.png")
+        .with_font("terminal8x8.png", 8, 8)
+        .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "dungeonfont.png")                  // Layer 0
+        .with_simple_console_no_bg(DISPLAY_WIDTH, DISPLAY_HEIGHT, "dungeonfont.png")            // Layer 1
+        .with_simple_console_no_bg(DISPLAY_WIDTH * 4, DISPLAY_HEIGHT * 4, "terminal8x8.png")    // Layer 2
         .build()?;
 
     // Runs the main loop of the game
