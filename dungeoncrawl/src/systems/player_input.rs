@@ -25,15 +25,40 @@ pub fn player_input(
             _ => Point::new(0, 0)
         };
 
-        // Iterate over each player (there is just one)
-        players.iter(ecs).for_each(|(entity, pos)|
-        {
-            // Calculate the new position
-            let destination = *pos + delta;
+        // Retrieve the player with its destination
+        let (player_entity, player_destination) = players
+            .iter(ecs)
+            .find_map(|(entity, pos)| Some((*entity, *pos + delta)))
+            .unwrap();
 
-            // "Send" a WantsToMove message
-            commands.push(((), WantsToMove { entity: *entity, destination}));
-        });
+        // Retrieve all the enemies
+        let mut enemies = <(Entity, &Point)>::query().filter(component::<Enemy>());
+
+        if delta.x != 0 || delta.y != 0
+        {
+            let mut hit_something = false;
+
+            enemies
+                .iter(ecs)
+                .filter(|(_, enemy_pos)|
+                {
+                    // Check if the position of the enemy matches with the new position of the player
+                    **enemy_pos == player_destination
+                })
+                .for_each(|(enemy, _)|
+                {
+                    hit_something = true;
+
+                    // Send a WantsToAttack message
+                    commands.push(((), WantsToAttack { attacker: player_entity, victim: *enemy }));
+                });
+
+            if !hit_something
+            {
+                // Send a WantsToMove message, when we don't hit any enemy during the player movement
+                commands.push(((), WantsToMove { entity: player_entity, destination: player_destination }));
+            }
+        }
 
         // Set the new turn state
         *turn_state = TurnState::PlayerTurn;

@@ -39,3 +39,11 @@ pub struct Health
 // The Name component
 #[derive(Clone, PartialEq)]
 pub struct Name(pub String);
+
+// The WantsToAttack component
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct WantsToAttack
+{
+    pub attacker: Entity,
+    pub victim: Entity
+}
