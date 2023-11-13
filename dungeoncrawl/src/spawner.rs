@@ -56,11 +56,11 @@ pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Poin
 // It returns a tuble consisting of (HitPoint, Name, CharacterToRender)
 fn goblin() -> (i32, String, FontCharType)
 {
-    (1, "Goblin".to_string(), to_cp437('g'))
+    (5, "Goblin".to_string(), to_cp437('g'))
 }
 
 // Retunrs a new Orc
 fn orc() -> (i32, String, FontCharType)
 {
-    (2, "Orc".to_string(), to_cp437('o'))
+    (10, "Orc".to_string(), to_cp437('o'))
 }
