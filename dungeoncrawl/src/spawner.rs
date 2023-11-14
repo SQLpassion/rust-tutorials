@@ -17,8 +17,8 @@ pub fn spawn_player(ecs: &mut World, pos: Point)
             },
             Health // Health component
             {
-                current: 20,
-                max: 20
+                current: 100,
+                max: 100
             }
         )
     );
@@ -52,15 +52,35 @@ pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Poin
     );
 }
 
+// Adds a new Amulet to the world
+pub fn spawn_amulet_of_yala(ecs: &mut World, pos: Point)
+{
+    // Push a new entity to the world
+    ecs.push
+    (
+        (
+            Item,           // Item tag
+            AmuletOfYala,   // AmuletOfYala tag
+            pos,            // Point component
+            Render          // Render component
+            {
+                color: ColorPair::new(WHITE, BLACK),
+                glyph: to_cp437('|')
+            },
+            Name("Amulet of Yala".to_string())
+        )
+    );
+}
+
 // Returns a new Goblin
 // It returns a tuble consisting of (HitPoint, Name, CharacterToRender)
 fn goblin() -> (i32, String, FontCharType)
 {
-    (5, "Goblin".to_string(), to_cp437('g'))
+    (1, "Goblin".to_string(), to_cp437('g'))
 }
 
 // Retunrs a new Orc
 fn orc() -> (i32, String, FontCharType)
 {
-    (10, "Orc".to_string(), to_cp437('o'))
+    (2, "Orc".to_string(), to_cp437('o'))
 }

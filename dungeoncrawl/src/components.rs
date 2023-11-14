@@ -51,3 +51,11 @@ pub struct WantsToAttack
 // The ChasingPlayer component
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct ChasingPlayer;
+
+// The Item component
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Item;
+
+// The AmuletOfYala component
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct AmuletOfYala;

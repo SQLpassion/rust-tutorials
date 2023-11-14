@@ -1,12 +1,14 @@
 use crate::prelude::*;
 const NUM_ROOMS: usize = 20;
+const UNREACHABLE: &f32 = &f32::MAX;
 
 // The Map Builder
 pub struct MapBuilder
 {
     pub map: Map,
     pub rooms: Vec<Rect>,
-    pub player_start: Point
+    pub player_start: Point,
+    pub amulet_start: Point
 }
 
 // The implementation of the Map Builder
@@ -110,13 +112,39 @@ impl MapBuilder
         {
             map: Map::new(),
             rooms: Vec::new(),
-            player_start: Point::zero()
+            player_start: Point::zero(),
+            amulet_start: Point::zero()
         };
 
         mb.fill(TileType::Wall);
         mb.build_random_rooms(rng);
         mb.build_corridors(rng);
         mb.player_start = mb.rooms[0].center();
+
+        // Create a new Dijkstra Map that is used to place the amulet
+        let dijkstra_map = DijkstraMap::new(
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT,
+            &vec![mb.map.point2d_to_index(mb.player_start)],
+            &mb.map,
+            1024.0
+        );
+
+        // Calculates the position of the amulet.
+        // It is as far as possible away from the player
+        mb.amulet_start = mb.map.index_to_point2d
+        (
+            dijkstra_map.map
+                .iter()
+                // Iterate over the content of the map, and it adds an index to each returned entry
+                // The returned tuple is as follows: (index, distance)
+                .enumerate()                            
+                // Filter out all unreachable tiles        
+                .filter(|(_, dist)| *dist < UNREACHABLE)
+                // The partial_cmp is needed, because we compare floating point numbers
+                .max_by(|a, b| a.1.partial_cmp(b.1).unwrap())
+                .unwrap().0
+        );
 
         mb
     }
