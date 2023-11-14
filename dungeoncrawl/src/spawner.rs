@@ -17,8 +17,8 @@ pub fn spawn_player(ecs: &mut World, pos: Point)
             },
             Health // Health component
             {
-                current: 100,
-                max: 100
+                current: 20,
+                max: 20
             }
         )
     );

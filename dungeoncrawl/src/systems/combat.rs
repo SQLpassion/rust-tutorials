@@ -3,6 +3,7 @@ use crate ::prelude::*;
 // Implements the Combat system
 #[system]
 #[read_component(WantsToAttack)]
+#[read_component(Player)]
 #[write_component(Health)]
 pub fn combat(
     ecs: &mut SubWorld, 
@@ -20,6 +21,13 @@ pub fn combat(
     // Iterate over each victim
     victims.iter().for_each(|(message, victim)|
     {
+        // Check if the victim is a player
+        let is_player = ecs
+            .entry_ref(*victim)
+            .unwrap()
+            .get_component::<Player>()
+            .is_ok();
+
         // Get the Health component of the victim
         if let Ok(health) = ecs
             .entry_mut(*victim)
@@ -29,7 +37,7 @@ pub fn combat(
             println!("Health before attack: {}", health.current);
             health.current -= 1;
 
-            if health.current < 1
+            if health.current < 1 && !is_player
             {
                 commands.remove(*victim);
             }
