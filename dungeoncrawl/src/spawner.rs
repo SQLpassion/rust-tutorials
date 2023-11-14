@@ -17,8 +17,8 @@ pub fn spawn_player(ecs: &mut World, pos: Point)
             },
             Health // Health component
             {
-                current: 20,
-                max: 20
+                current: 100,
+                max: 100
             }
         )
     );
@@ -40,7 +40,7 @@ pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Poin
     (
         (
             Enemy,          // Enemy tag 
-            MovingRandomly, // Random Movement tag
+            ChasingPlayer,  // Chasing Player tag
             pos,            // Point component
             Render          // Render component
             {

@@ -47,3 +47,7 @@ pub struct WantsToAttack
     pub attacker: Entity,
     pub victim: Entity
 }
+
+// The ChasingPlayer component
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct ChasingPlayer;
