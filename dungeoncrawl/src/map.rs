@@ -148,6 +148,12 @@ impl BaseMap for Map
     {
         DistanceAlg::Pythagoras.distance2d(self.index_to_point2d(idx1), self.index_to_point2d(idx2))    
     }
+
+    // Check if a tile is opaque - Wall tiles are opaque
+    fn is_opaque(&self, idx: usize) -> bool
+    {
+        self.tiles[idx as usize] != TileType::Floor
+    }
 }
 
 // Maps a x/y coordinate to a linear index into the TileMap array

@@ -19,7 +19,8 @@ pub fn spawn_player(ecs: &mut World, pos: Point)
             {
                 current: 100,
                 max: 100
-            }
+            },
+            FieldOfView::new(8) // FieldOfView component
         )
     );
 }
@@ -47,7 +48,8 @@ pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Poin
                 color: ColorPair::new(WHITE, BLACK), glyph
             },
             Health { current: hp, max: hp}, // Health component
-            Name(name)                      // Name component
+            Name(name),                     // Name component
+            FieldOfView::new(6)             // FieldOfView component
         )
     );
 }

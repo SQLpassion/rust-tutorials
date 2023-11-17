@@ -4,6 +4,7 @@ use crate::prelude::*;
 #[system]
 #[read_component(Point)]
 #[read_component(ChasingPlayer)]
+#[read_component(FieldOfView)]
 #[read_component(Health)]
 #[read_component(Player)]
 pub fn chasing(
@@ -12,15 +13,13 @@ pub fn chasing(
     commands: &mut CommandBuffer)
 {
     // Return all the monsters that are chasing the player
-    let mut monsters = <(Entity, &Point, &ChasingPlayer)>::query();
-
+    let mut monsters = <(Entity, &Point, &ChasingPlayer, &FieldOfView)>::query();
+    
     // Return all entities with a Point and Health component (player and monsters)
     let mut positions = <(Entity, &Point, &Health)>::query();
 
     // Return the players position
     let mut player = <(&Point, &Player)>::query();
-
-    // Return the player position
     let player_pos = player.iter(ecs).nth(0).unwrap().0;
     let player_idx = map_idx(player_pos.x, player_pos.y);
 
@@ -35,8 +34,14 @@ pub fn chasing(
     );
 
     // Iterate over each monster
-    monsters.iter(ecs).for_each(|(entity, monster_pos, _)|
+    monsters.iter(ecs).for_each(|(entity, monster_pos, _, fov)|
     {
+        // Check if the current visible tiles of the monster includes the tile where the player currently is
+        if !fov.visible_tiles.contains(&player_pos)
+        {
+            return;
+        }
+
         let idx = map_idx(monster_pos.x, monster_pos.y);
 
         // Find for the current monster the tile with the lowest exit value (based on the generated Dijkstra Map)

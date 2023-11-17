@@ -2,8 +2,9 @@ use crate::prelude::*;
 
 // Derives a query from the system parameters "entity" and "want_move".
 // It runs the system for every matching entity.
-#[system(for_each)]                 
+#[system(for_each)]       
 #[read_component(Player)]
+#[read_component(FieldOfView)]
 pub fn movement(
     entity: &Entity,                // The entity from the generated query
     want_move: &WantsToMove,        // The "WantsToMove" message from the generated query
@@ -19,11 +20,18 @@ pub fn movement(
         // This will replace the old component.
         commands.add_component(want_move.entity, want_move.destination);
 
-        // Check if the entity is a player that wants to move
-        if ecs.entry_ref(want_move.entity).unwrap().get_component::<Player>().is_ok()
+        if let Ok(entry) = ecs.entry_ref(want_move.entity)
         {
-            // Recenter the camera on the player
-            camera.on_player_move(want_move.destination);
+            // Get the FieldOfView component of the current entity
+            if let Ok(fov) = entry.get_component::<FieldOfView>()
+            {
+                commands.add_component(want_move.entity, fov.clone_dirty());
+            }
+
+            if entry.get_component::<Player>().is_ok()
+            {
+                camera.on_player_move(want_move.destination);
+            }
         }
     }
 
