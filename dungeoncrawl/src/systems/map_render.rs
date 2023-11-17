@@ -23,19 +23,39 @@ pub fn map_render(
         {
             let pt = Point::new(x, y);
             let offset = Point::new(camera.left_x, camera.top_y);
+            let idx = map_idx(x, y);
 
             // Check if the current tile is within the map and if it is visible based on the current FieldOfView of the player
-            if map.in_bounds(pt) && player_fov.visible_tiles.contains(&pt)
+            if map.in_bounds(pt) && (player_fov.visible_tiles.contains(&pt) | map.revaled_tiles[idx])
             {
-                let idx = map_idx(x, y);
-                let glyph = match map.tiles[idx]
+                let tint = if player_fov.visible_tiles.contains(&pt)
                 {
-                    TileType::Floor => to_cp437('.'),
-                    TileType::Wall => to_cp437('#')
+                    WHITE
+                }
+                else
+                {
+                    DARK_GRAY
                 };
 
-                // Add a drawing command to the batch
-                draw_batch.set(pt - offset, ColorPair::new(WHITE, BLACK), glyph);
+                match map.tiles[idx]
+                {
+                    // Draw the floor tile
+                    TileType::Floor => 
+                    {
+                        draw_batch.set(
+                            pt - offset, 
+                            ColorPair::new(tint, BLACK),
+                            to_cp437('.'));
+                    }
+                    // Draw the wall tile
+                    TileType::Wall =>
+                    {
+                        draw_batch.set(
+                            pt - offset, 
+                            ColorPair::new(tint, BLACK),
+                            to_cp437('#'));
+                    }
+                }
             }
         }
     }

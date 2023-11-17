@@ -8,7 +8,7 @@ use crate::prelude::*;
 pub fn movement(
     entity: &Entity,                // The entity from the generated query
     want_move: &WantsToMove,        // The "WantsToMove" message from the generated query
-    #[resource]map: &Map,           // Returns a reference to the stored Map resource
+    #[resource]map: &mut Map,       // Returns a reference to the stored Map resource
     #[resource]camera: &mut Camera, // Returns a reference to the stored Camera resource
     ecs: &mut SubWorld,
     commands: &mut CommandBuffer)
@@ -26,11 +26,17 @@ pub fn movement(
             if let Ok(fov) = entry.get_component::<FieldOfView>()
             {
                 commands.add_component(want_move.entity, fov.clone_dirty());
-            }
 
-            if entry.get_component::<Player>().is_ok()
-            {
-                camera.on_player_move(want_move.destination);
+                if entry.get_component::<Player>().is_ok()
+                {
+                    camera.on_player_move(want_move.destination);
+
+                    // For all visible tiles, we set the entry in revealed_tiles to true
+                    fov.visible_tiles.iter().for_each(|pos|
+                    {
+                        map.revaled_tiles[map_idx(pos.x, pos.y)] = true;
+                    });
+                }
             }
         }
     }

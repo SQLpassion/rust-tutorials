@@ -12,7 +12,10 @@ pub enum TileType
 pub struct Map
 {
     // A list of tiles
-    pub tiles: Vec<TileType>
+    pub tiles: Vec<TileType>,
+
+    // A list of already seen tiles
+    pub revaled_tiles: Vec<bool>
 }
 
 // The implementation of the game map
@@ -24,7 +27,8 @@ impl Map
         Self
         {
             // Creates a new map where all the tiles are Floor types
-            tiles: vec![TileType::Floor; NUM_TILES]
+            tiles: vec![TileType::Floor; NUM_TILES],
+            revaled_tiles: vec![false; NUM_TILES]
         }
     }
 
