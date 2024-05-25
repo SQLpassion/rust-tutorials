@@ -6,10 +6,13 @@ mod empty;
 mod rooms;
 mod automata;
 mod prefab;
+mod level;
 use empty::EmptyArchitect;
 use rooms::RoomsArchitect;
 use automata::CellularAutomataArchitect;
 use prefab::apply_prefab;
+
+use self::level::LevelArchitect;
 
 // Defines the MapArchitect trait
 trait MapArchitect
@@ -167,11 +170,14 @@ impl MapBuilder
 
     pub fn new (rng: &mut RandomNumberGenerator) -> Self
     {
-        // let mut architect = CellularAutomataArchitect{};
+        /* // let mut architect = CellularAutomataArchitect{};
         let mut architect = EmptyArchitect{};
         let mut mb = architect.new(rng);
         apply_prefab(&mut mb, rng);
 
-        mb
+        mb */
+
+        let mut architect = LevelArchitect{};
+        architect.new(rng)
     }
 }
