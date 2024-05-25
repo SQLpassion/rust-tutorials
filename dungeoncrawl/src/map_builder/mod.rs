@@ -5,9 +5,11 @@ const UNREACHABLE: &f32 = &f32::MAX;
 mod empty;
 mod rooms;
 mod automata;
+mod prefab;
 use empty::EmptyArchitect;
 use rooms::RoomsArchitect;
 use automata::CellularAutomataArchitect;
+use prefab::apply_prefab;
 
 // Defines the MapArchitect trait
 trait MapArchitect
@@ -165,7 +167,11 @@ impl MapBuilder
 
     pub fn new (rng: &mut RandomNumberGenerator) -> Self
     {
-        let mut architect = CellularAutomataArchitect{};
-        architect.new(rng)
+        // let mut architect = CellularAutomataArchitect{};
+        let mut architect = EmptyArchitect{};
+        let mut mb = architect.new(rng);
+        apply_prefab(&mut mb, rng);
+
+        mb
     }
 }
