@@ -55,12 +55,10 @@ impl State
         spawn_player(&mut ecs, map_builder.player_start);
         spawn_amulet_of_yala(&mut ecs, map_builder.amulet_start);
 
-        // In each room we also add a new monster to the world
-        map_builder.rooms
+        // Add the monsters to the world
+        map_builder.monster_spawns
             .iter()
-            .skip(1)
-            .map(|r| r.center())
-            .for_each(|pos| spawn_monster(&mut ecs, &mut rng, pos));
+            .for_each(|pos| spawn_monster(&mut ecs, &mut rng, *pos));
 
         // Inserts the map, the camera, and the current turn state as resources
         resources.insert(map_builder.map);
